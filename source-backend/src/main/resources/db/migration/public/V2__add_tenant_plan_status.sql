@@ -1,0 +1,4 @@
+-- Add plan and status columns to tenants table
+ALTER TABLE tenants
+    ADD COLUMN IF NOT EXISTS plan VARCHAR(20) NOT NULL DEFAULT 'BASIC',
+    ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE';

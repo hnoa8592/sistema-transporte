@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: sistema-transporte
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sistema_transporte}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration/public
+    schemas: public
+    table: flyway_schema_history_public
+
+  cache:
+    type: caffeine
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+  error:
+    include-message: never
+    include-stacktrace: never
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:bXlTZWNyZXRLZXlGb3JKV1RUb2tlbkluU3ByaW5nQm9vdEFwcGxpY2F0aW9uMjAyNA==}
+    access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION:900000}
+    refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION:604800000}
+  reservation:
+    expiry-minutes: ${RESERVATION_EXPIRY_MINUTES:30}
+  siat:
+    endpoint-codigos: ${SIAT_ENDPOINT_CODIGOS:https://siatrest.impuestos.gob.bo/v2/ServicioFacturacionCodigos}
+    endpoint-facturacion: ${SIAT_ENDPOINT_FACTURACION:https://siatrest.impuestos.gob.bo/v2/ServicioFacturacionComputarizada}
+    ambiente: ${SIAT_AMBIENTE:2}
+    modalidad: ${SIAT_MODALIDAD:2}
+    certificate-path: ${SIAT_CERT_PATH:}
+    certificate-password: ${SIAT_CERT_PASSWORD:}
+    connection-timeout: ${SIAT_CONN_TIMEOUT:30000}
+    read-timeout: ${SIAT_READ_TIMEOUT:60000}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: alpha
+    tagsSorter: alpha
+
+logging:
+  level:
+    com.transporte: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.security: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: never
